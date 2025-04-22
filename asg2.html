@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sabrina Lee CSE160 Assignment 2</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      
+      h1 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      
+      .segment {
+        display: inline-flex;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .slider-cont {
+        margin-left: 20px;
+        margin-right: 20px;
+        width: 100%;
+      }
+      
+      canvas {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      
+      .notes-container {
+        background-color: #e8f4fc;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #3498db;
+      }
+      
+      button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+      }
+      
+      button:hover {
+        background-color: #2980b9;
+      }
+      
+      .control-section {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .control-section h3 {
+        margin-top: 0;
+        color: #2c3e50;
+      }
+      
+      .info-section {
+        margin-bottom: 30px;
+      }
+      
+      .reference-image {
+        margin-top: 20px;
+        text-align: center;
+      }
+      
+      .reference-image img {
+        max-width: 400px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+      }
+      
+      .reference-image figcaption {
+        font-style: italic;
+        color: #666;
+      }
+    </style>
+  </head>
+
+  <body onload="main()">
+    <div class="info-section">
+      <h1>CSE160 Assignment 2</h1>
+      <p><strong>Sabrina Lee</strong> | ID: 1958512 | saemlee@ucsc.edu</p>
+    </div>
+    
+    <div class="notes-container">
+        <h3>Notes to Grader:</h3>
+        <ul>
+          <li><strong>Controls:</strong>
+            <ul>
+              <li>Camera angle: Click and drag on the canvas</li>
+              <li>Head position: Adjust using the sliders</li>
+              <li>Leg positions: Adjust using the sliders</li>
+            </ul>
+          </li>
+          <li><strong>Animation:</strong>
+            <ul>
+              <li>Toggle with the button or by shift-clicking the canvas</li>
+              <li>Features a gray cottontail rabbit (reference image below)</li>
+              <li>Shift animation shows the ears swiveling to listen for potential predators</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+    <div class="segment">
+      <div class="segment" id="display-container">
+        <canvas id="webgl" width="650" height="650">
+          Please use a browser that supports "canvas"
+        </canvas>
+      </div>
+      
+      <div class="slider-cont">
+        <div class="control-section" id="camera-angle-segment">
+          <h3>Camera Angle</h3>
+          X:<input type="range" min="-90" max="90" value="30" class="slider" id="cam-angle-x">
+          <br>
+          Y:<input type="range" min="-90" max="90" value="30" class="slider" id="cam-angle-y">
+          <br>
+          Z:<input type="range" min="-90" max="90" value="0" class="slider" id="cam-angle-z">
+        </div>
+        
+        <div class="control-section" id="head-controls">
+          <h3>Head Controls</h3>
+          X: <input type="range" min="-30" max="30" value="0" class="slider" id="h-slider-x"> 
+          <br>
+          Y: <input type="range" min="-30" max="30" value="0" class="slider" id="h-slider-y"> 
+          <br>
+          Z: <input type="range" min="-30" max="30" value="0" class="slider" id="h-slider-z"> 
+        </div>
+        
+        <div class="control-section" id="button-settings">
+          <h3>Animation Controls</h3>
+          <button id="toggle-animation">Toggle Animation</button>
+          <br><br>
+          <button id="toggle-shift">Toggle ShiftClick Mode</button>
+        </div>
+      </div>
+      
+      <div class="slider-cont">
+        <div class="control-section" id="leg-sliders">
+          <h3>Leg Controls</h3>
+          
+          <h4>Front Left Leg</h4>
+          Upper Leg <input type="range" min="0" max="50" value="10" class="slider" id="front-left-leg-upper-slider">
+          <br>
+          Knee: <input type="range" min="-30" max="30" value="0" class="slider" id="front-left-leg-lower-slider"> 
+          
+          <h4>Front Right Leg</h4>
+          Upper Leg <input type="range" min="0" max="50" value="10" class="slider" id="front-right-leg-upper-slider">
+          <br>
+          Knee: <input type="range" min="-30" max="30" value="0" class="slider" id="front-right-leg-lower-slider"> 
+
+          <h4>Back Left Leg</h4>
+          Upper Leg <input type="range" min="-50" max="20" value="-20" class="slider" id="back-left-leg-upper-slider">
+          <br>
+          Knee: <input type="range" min="0" max="80" value="40" class="slider" id="back-left-leg-lower-slider">
+          
+          <h4>Back Right Leg</h4>
+          Upper Leg <input type="range" min="-50" max="20" value="-20" class="slider" id="back-right-leg-upper-slider">
+          <br>
+          Knee: <input type="range" min="0" max="80" value="40" class="slider" id="back-right-leg-lower-slider">
+        </div>
+      </div>
+    </div>
+    
+    <div class="reference-image">
+      <figure>
+        <img src="cse160_cotton_tail.jpg" alt="Reference image of gray cottontail rabbit">
+        <figcaption>Reference image used for the gray cottontail rabbit animation</figcaption>
+      </figure>
+    </div>
+
+    <div class="segment" id="performance-display"></div>
+
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix-cse160.js"></script>
+    <script src="../lib/point.js"></script>
+    <script src="../lib/triangle.js"></script>
+    <script src="../lib/circle.js"></script>
+    <script src="../lib/cube.js"></script>
+    <script src="../lib/pyramid.js"></script>
+    <script src="asg2.js"></script>
+  </body>
+</html>
